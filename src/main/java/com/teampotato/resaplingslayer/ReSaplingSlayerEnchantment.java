@@ -12,26 +12,10 @@ import static com.teampotato.resaplingslayer.ReSaplingSlayer.*;
 public class ReSaplingSlayerEnchantment extends Enchantment {
 
     private static final EquipmentSlot[] MAIN_HAND = new EquipmentSlot[]{EquipmentSlot.MAINHAND};
-    private static final EnchantmentCategory ENCHANTMENT_TYPE = EnchantmentCategory.create(ID + ":on_shear", null);
+    private static final EnchantmentCategory ENCHANTMENT_TYPE = EnchantmentCategory.create(ID + ":on_shear", item -> item instanceof ShearsItem);
 
-    private static Rarity getRarityInConfig() {
-        switch (rarity.get()) {
-            case "COMMON":
-                return Enchantment.Rarity.COMMON;
-            case "UNCOMMON":
-                return Rarity.UNCOMMON;
-            case "RARE":
-                return Rarity.RARE;
-            case "VERY_RARE":
-                return Rarity.VERY_RARE;
-            default:
-                LOGGER.error("Your rarity value in SapingSlayer config is invalid. Switch to COMMON rarity");
-                return Rarity.COMMON;
-        }
-    }
-
-    protected ReSaplingSlayerEnchantment() {
-        super(getRarityInConfig(), ENCHANTMENT_TYPE, MAIN_HAND);
+    public ReSaplingSlayerEnchantment() {
+        super(Rarity.COMMON, ENCHANTMENT_TYPE, MAIN_HAND);
     }
 
     public boolean canEnchant(ItemStack pStack) {
