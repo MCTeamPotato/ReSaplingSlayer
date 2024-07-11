@@ -52,7 +52,7 @@ public class ReSaplingSlayer {
         isTreasureOnly = builder.define("isTreasure", false);
         isDiscoverable = builder.define("canBeFoundInLoot", true);
         isAllowedOnBooks = builder.define("isAllowedOnBooks", true);
-        damagePercent = builder.comment("How many durability of the shears will be taken after harvesting sapling").define("harvestDamagePercent", 0.01);
+        damagePercent = builder.comment("How many durability of the shears will be taken after harvesting sapling").define("harvestDamagePercent", 0.1);
         builder.pop();
         configSpec = builder.build();
     }
@@ -68,13 +68,10 @@ public class ReSaplingSlayer {
     private static void dropSapling(Level world, BlockPos pos, LeavesBlock leaves) {
         List<Item> saplings = Objects.requireNonNull(ITEMS.tags()).getTag(ItemTags.SAPLINGS).stream().toList();
         ResourceLocation registryName = leaves.getLootTable();
-        String nameSpace = Objects.requireNonNull(registryName).getNamespace();
-        String replace = registryName.getPath().replace("_leaves", "_sapling").replace("blocks/", "");
-        ResourceLocation registryNamee = new ResourceLocation(nameSpace, replace);
-        int sapling = saplings.indexOf(ITEMS.getValue(registryNamee));
+        int sapling = saplings.indexOf(ITEMS.getValue(new ResourceLocation(Objects.requireNonNull(registryName).getNamespace(), registryName.getPath().replace("_leaves", "_sapling").replace("blocks/", ""))));
         if (sapling == -1) {
             LOGGER.error("ReSapingSlayer: Failed to find the corresponding sapling of the leaves");
-            LOGGER.error(new ResourceLocation(Objects.requireNonNull(registryName).getNamespace(), registryName.getPath().replace("_leaves", "_sapling")));
+            //LOGGER.error(new ResourceLocation(Objects.requireNonNull(registryName).getNamespace(), registryName.getPath().replace("_leaves", "_sapling")));
             return;
         }
         world.addFreshEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), saplings.get(sapling).getDefaultInstance()));
@@ -87,11 +84,9 @@ public class ReSaplingSlayer {
         BlockPos pos = event.getPos();
         Block block = player.level().getBlockState(event.getPos()).getBlock();
         if (!item.getEnchantmentTags().toString().contains("resapling_slayer") || !(item.getItem() instanceof ShearsItem) || !(block instanceof LeavesBlock) || event.isCanceled()) return;
-        int reduceDamage = (int) (damagePercent.get() * item.getMaxDamage() + item.getDamageValue());
-        if(reduceDamage + item.getDamageValue() <= item.getDamageValue()) {
-            if (item.isDamageableItem() && !player.level().isClientSide) item.setDamageValue(reduceDamage);
-            dropSapling(player.level(), pos, (LeavesBlock) block);
-            player.level().setBlock(pos, AIR, 1);
-        }
+        int reduceDamage = (int) (damagePercent.get() * item.getMaxDamage());
+        if (item.isDamageableItem() && !player.level().isClientSide) item.hurtAndBreak(reduceDamage, player, (p) -> p.broadcastBreakEvent(player.getUsedItemHand()));
+        dropSapling(player.level(), pos, (LeavesBlock) block);
+        player.level().setBlock(pos, AIR, 1);
     }
 }
