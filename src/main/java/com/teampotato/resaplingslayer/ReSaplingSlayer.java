@@ -34,28 +34,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import static com.teampotato.resaplingslayer.ReSaplingSlayerConfig.*;
 @SuppressWarnings("unused")
 @Mod(ReSaplingSlayer.ID)
 @Mod.EventBusSubscriber(modid = ReSaplingSlayer.ID)
 public class ReSaplingSlayer {
     public static final String ID = "resaplingslayer";
     public static final Logger LOGGER = LogManager.getLogger("ReSapingSlayer");
-    public static ForgeConfigSpec configSpec;
-    public static ForgeConfigSpec.BooleanValue isTradeable, isCurse, isTreasureOnly, isDiscoverable, isAllowedOnBooks;
-    public static ForgeConfigSpec.ConfigValue<Double> damagePercent;
-
-    static {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        builder.push("ReSapling Slayer");
-        isTradeable = builder.define("isTradeable", true);
-        isCurse = builder.define("isCurse", false);
-        isTreasureOnly = builder.define("isTreasure", false);
-        isDiscoverable = builder.define("canBeFoundInLoot", true);
-        isAllowedOnBooks = builder.define("isAllowedOnBooks", true);
-        damagePercent = builder.comment("How many durability of the shears will be taken after harvesting sapling").define("harvestDamagePercent", 0.1);
-        builder.pop();
-        configSpec = builder.build();
-    }
     public ReSaplingSlayer() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, configSpec);
         ENCHANTMENT_DEFERRED_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());

@@ -7,15 +7,16 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 import static com.teampotato.resaplingslayer.ReSaplingSlayer.*;
-
+import static com.teampotato.resaplingslayer.ReSaplingSlayerConfig.*;
 @SuppressWarnings("NullableProblems")
 public class ReSaplingSlayerEnchantment extends Enchantment {
 
     private static final EquipmentSlot[] MAIN_HAND = new EquipmentSlot[]{EquipmentSlot.MAINHAND};
     private static final EnchantmentCategory ENCHANTMENT_TYPE = EnchantmentCategory.create(ID + ":on_shear", item -> item instanceof ShearsItem);
+    public static Enchantment.Rarity rarity = Enchantment.Rarity.COMMON;
 
     public ReSaplingSlayerEnchantment() {
-        super(Rarity.COMMON, ENCHANTMENT_TYPE, MAIN_HAND);
+        super(rarity, ENCHANTMENT_TYPE, MAIN_HAND);
     }
 
     public boolean canEnchant(ItemStack pStack) {
